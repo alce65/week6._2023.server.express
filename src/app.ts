@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { thingsRouter } from './router/things.router.js';
@@ -40,3 +40,10 @@ app.post('/', (req, resp) => {
 });
 app.patch('/:id');
 app.delete('/:id');
+
+app.use((_error: Error, _req: Request, resp: Response, _next: NextFunction) => {
+  console.log('Soy el middleware de errores');
+  resp.json({
+    error: [],
+  });
+});
