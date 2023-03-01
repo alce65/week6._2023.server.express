@@ -23,6 +23,12 @@ export class ThingsMongoRepo implements Repo<Thing> {
     return data;
   }
 
+  async search(query: { key: string; value: unknown }) {
+    debug('search');
+    const data = await ThingModel.find({ [query.key]: query.value });
+    return data;
+  }
+
   async create(info: Partial<Thing>): Promise<Thing> {
     debug('create');
     const data = await ThingModel.create(info);
