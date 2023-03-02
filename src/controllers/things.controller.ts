@@ -2,10 +2,13 @@ import { Response, Request, NextFunction } from 'express';
 import { Repo } from '../repository/repo.interface.js';
 import { Thing } from '../entities/thing.js';
 import createDebug from 'debug';
+import { RequestPlus } from '../interceptors/logged.js';
+import { User } from '../entities/user.js';
+import { HTTPError } from '../errors/errors.js';
 const debug = createDebug('W6:controller');
 
 export class ThingsController {
-  constructor(public repo: Repo<Thing>) {
+  constructor(public repo: Repo<Thing>, public repoUsers: Repo<User>) {
     debug('Instantiate');
   }
 
@@ -33,12 +36,19 @@ export class ThingsController {
     }
   }
 
-  async post(req: Request, resp: Response, next: NextFunction) {
+  async post(req: RequestPlus, resp: Response, next: NextFunction) {
     try {
       debug('post');
-      const data = await this.repo.create(req.body);
+      const userId = req.info?.id;
+      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user id');
+      const actualUser = await this.repoUsers.queryId(userId); // Repo throw error if not found
+      req.body.owner = userId;
+      const newThing = await this.repo.create(req.body);
+      // Option bidireccional
+      actualUser.things.push(newThing);
+      this.repoUsers.update(actualUser);
       resp.json({
-        results: [data],
+        results: [newThing],
       });
     } catch (error) {
       next(error);
@@ -61,7 +71,7 @@ export class ThingsController {
   async delete(req: Request, resp: Response, next: NextFunction) {
     try {
       debug('delete');
-      this.repo.destroy(req.params.id);
+      await this.repo.destroy(req.params.id);
       resp.json({
         results: [],
       });

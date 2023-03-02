@@ -12,7 +12,7 @@ export class ThingsMongoRepo implements Repo<Thing> {
 
   async query(): Promise<Thing[]> {
     debug('query');
-    const data = await ThingModel.find();
+    const data = await ThingModel.find().populate('owner', { things: 0 });
     return data;
   }
 
@@ -23,7 +23,7 @@ export class ThingsMongoRepo implements Repo<Thing> {
     return data;
   }
 
-  async search(query: { key: string; value: unknown }) {
+  async search(query: { key: string; value: unknown }): Promise<Thing[]> {
     debug('search');
     const data = await ThingModel.find({ [query.key]: query.value });
     return data;
@@ -31,7 +31,9 @@ export class ThingsMongoRepo implements Repo<Thing> {
 
   async create(info: Partial<Thing>): Promise<Thing> {
     debug('create');
-    const data = await ThingModel.create(info);
+    const data = (await ThingModel.create(info)).populate('owner', {
+      things: 0,
+    });
     return data;
   }
 

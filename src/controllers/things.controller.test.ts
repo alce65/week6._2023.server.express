@@ -2,15 +2,19 @@ import { Response, Request, NextFunction } from 'express';
 
 import { ThingsFileRepo } from '../repository/things.file.repo';
 import { ThingsController } from './things.controller';
+import { UsersMongoRepo } from '../repository/users.mongo.repo';
 
 describe('Given ThingsController', () => {
   const repo: ThingsFileRepo = {
     create: jest.fn(),
     query: jest.fn(),
+    search: jest.fn(),
     queryId: jest.fn(),
     update: jest.fn(),
     destroy: jest.fn(),
   };
+
+  const userRepo = {} as UsersMongoRepo;
 
   const req = {
     body: {},
@@ -21,7 +25,7 @@ describe('Given ThingsController', () => {
   } as unknown as Response;
   const next = jest.fn();
 
-  const controller = new ThingsController(repo);
+  const controller = new ThingsController(repo, userRepo);
 
   describe('getAll', () => {
     test('Then it should ... if there ara NOT errors', async () => {
