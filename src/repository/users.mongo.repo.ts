@@ -1,17 +1,29 @@
-import debug from 'debug';
+import createDebug from 'debug';
 import { User } from '../entities/user';
 import { HTTPError } from '../errors/errors.js';
 import { Repo } from './repo.interface';
 import { UserModel } from './users.mongo.model.js';
+const debug = createDebug('W6:repo:users');
 
 export class UsersMongoRepo implements Repo<User> {
-  constructor() {
+  private static instance: UsersMongoRepo;
+
+  public static getInstance(): UsersMongoRepo {
+    if (!UsersMongoRepo.instance) {
+      UsersMongoRepo.instance = new UsersMongoRepo();
+    }
+
+    return UsersMongoRepo.instance;
+  }
+
+  private constructor() {
     debug('Instantiate');
   }
 
   async query(): Promise<User[]> {
     debug('query');
-    return [];
+    const data = await UserModel.find().populate('things', { owner: 0 });
+    return data;
   }
 
   async queryId(id: string): Promise<User> {

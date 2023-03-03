@@ -17,6 +17,13 @@ const userSchema = new Schema<User>({
       ref: 'Thing',
     },
   ],
+  // Add favorites management
+  // favorites: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'Thing',
+  //   },
+  // ],
 });
 
 userSchema.set('toJSON', {

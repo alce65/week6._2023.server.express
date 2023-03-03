@@ -1,3 +1,6 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -8,3 +11,5 @@ export const config = {
   dbName: process.env.DB_NAME,
   jwtSecret: process.env.SECRET,
 };
+
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));

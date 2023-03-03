@@ -1,11 +1,12 @@
 import { Response, Request, NextFunction } from 'express';
+
 import { Repo } from '../repository/repo.interface.js';
 import { Thing } from '../entities/thing.js';
 import createDebug from 'debug';
 import { RequestPlus } from '../interceptors/logged.js';
 import { User } from '../entities/user.js';
 import { HTTPError } from '../errors/errors.js';
-const debug = createDebug('W6:controller');
+const debug = createDebug('W6:controller:things');
 
 export class ThingsController {
   constructor(public repo: Repo<Thing>, public repoUsers: Repo<User>) {

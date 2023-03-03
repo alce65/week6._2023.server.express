@@ -2,6 +2,10 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { config } from '../config.js';
 import { HTTPError } from '../errors/errors.js';
+import createDebug from 'debug';
+const debug = createDebug('W6:services:auth');
+
+debug('Loaded');
 
 export interface PayloadToken extends jwt.JwtPayload {
   id: string;

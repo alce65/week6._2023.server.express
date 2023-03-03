@@ -1,10 +1,16 @@
 import fs from 'fs/promises';
 import { Repo } from './repo.interface';
 import { Thing } from '../entities/thing';
+import createDebug from 'debug';
+const debug = createDebug('W6:repo:things');
 
 const file = './data/data.json';
 
 export class ThingsFileRepo implements Repo<Thing> {
+  constructor() {
+    debug('Instantiate');
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   search(_query: { key: string; value: unknown }): Promise<Thing[]> {
     throw new Error('Method not implemented.');

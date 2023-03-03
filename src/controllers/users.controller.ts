@@ -1,13 +1,25 @@
 import { Response, Request, NextFunction } from 'express';
-import debug from 'debug';
+import createDebug from 'debug';
 import { User } from '../entities/user';
 import { Repo } from '../repository/repo.interface';
 import { HTTPError } from '../errors/errors.js';
 import { Auth, PayloadToken } from '../services/auth.js';
-
+const debug = createDebug('W6:controller:users');
 export class UsersController {
   constructor(public repo: Repo<User>) {
     debug('Instantiate');
+  }
+
+  async getAll(_req: Request, resp: Response, next: NextFunction) {
+    try {
+      debug('getAll');
+      const data = await this.repo.query();
+      resp.json({
+        results: data,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async register(req: Request, resp: Response, next: NextFunction) {

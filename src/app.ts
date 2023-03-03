@@ -1,3 +1,4 @@
+import path from 'path';
 import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -5,6 +6,7 @@ import { thingsRouter } from './routers/things.router.js';
 import { usersRouter } from './routers/users.router.js';
 import createDebug from 'debug';
 import { CustomError } from './errors/errors.js';
+import { __dirname } from './config.js';
 const debug = createDebug('W6:app');
 export const app = express();
 app.disable('x-powered-by');
@@ -20,6 +22,9 @@ app.use((_req, _resp, next) => {
   debug('Soy un middleware');
   next();
 });
+
+debug({ __dirname });
+app.use(express.static(path.resolve(__dirname, 'public')));
 
 // Modo más organizado de hacerlo
 // Ejemplo para una ruta
